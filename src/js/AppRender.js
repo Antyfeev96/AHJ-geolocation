@@ -12,7 +12,7 @@ export default class AppRender {
     this.body.append(this.textareaEl);
   }
 
-  renderMessage(text) {
+  renderMessage(text, date, coords) {
     this.messageEl = document.createElement('div');
     this.messageEl.className = 'message';
     this.textEl = document.createElement('div');
@@ -20,9 +20,11 @@ export default class AppRender {
     this.textEl.textContent = text;
     this.timestampEl = document.createElement('div');
     this.timestampEl.className = 'message__timestamp';
-  }
-
-  createDate() {
-    this.date = new Date();
+    this.timestampEl.textContent = 'message__timestamp';
+    this.coordsEl = document.createElement('div');
+    this.coordsEl.className = 'message__coords';
+    this.coordsEl.textContent = coords;
+    this.messageEl.append(this.textEl, this.timestampEl, this.coordsEl);
+    this.messagesEl.append(this.messageEl);
   }
 }
