@@ -46,8 +46,15 @@ export default class AppController {
   positionDetected(position) {
     const { timestamp, coords } = position;
     const { latitude, longitude, accuracy } = coords;
-    console.log(timestamp, latitude, longitude, accuracy);
-    this.layout.renderMessage(this.text, this.createDate(), `${latitude} ${longitude}`);
+    console.log(`
+    Координаты успешно получены
+    Время: ${timestamp}
+    Ширина: ${latitude}
+    Долгота: ${longitude}
+    Точность позиции +- ${accuracy} метров
+    `);
+    this.coords = `[${latitude.toFixed(5)}, ${longitude.toFixed(5)}]`;
+    this.layout.renderMessage(this.text, this.createDate(), this.coords);
   }
 
   positionError(error) {
