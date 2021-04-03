@@ -20,7 +20,7 @@ export default class AppRender {
     this.textEl.textContent = text;
     this.timestampEl = document.createElement('div');
     this.timestampEl.className = 'message__timestamp';
-    this.timestampEl.textContent = 'message__timestamp';
+    this.timestampEl.textContent = date;
     this.coordsEl = document.createElement('div');
     this.coordsEl.className = 'message__coords';
     this.coordsEl.textContent = coords;

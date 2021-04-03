@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable class-methods-use-this */
 export default class AppController {
   constructor(layout) {
     this.layout = layout;
@@ -13,7 +15,7 @@ export default class AppController {
     this.body.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && this.text !== '') {
         this.text = this.body.querySelector('textarea').value;
-        this.layout.renderMessage(this.text, this.createDate(), this.getCoords());
+        this.getCoords();
         this.body.querySelector('textarea').value = '';
       }
     });
@@ -21,40 +23,38 @@ export default class AppController {
 
   createDate() {
     this.date = new Date();
-    this.formatter = new Intl.DateTimeFormat('ru', {
+    this.dailyFormatter = new Intl.DateTimeFormat('ru', {
       hour: 'numeric',
       minute: 'numeric',
+    });
+    this.yearFormatter = new Intl.DateTimeFormat('ru', {
       year: 'numeric',
       month: 'numeric',
       day: 'numeric',
     });
-    return this.formatter.format(this.date);
+    return `${this.yearFormatter.format(this.date)} ${this.dailyFormatter.format(this.date)}`;
   }
 
   getCoords() {
     if (navigator.geolocation) {
-      this.position = navigator
-        .geolocation.getCurrentPosition(this.positionDetected, this.positionError);
-      const { latitude, longitude, accuracy } = this.position.coords;
-      this.coords = `${latitude}, ${longitude}, ${accuracy}`;
-      return this.coords;
+      return navigator
+        .geolocation
+        .getCurrentPosition((pos) => this.positionDetected(pos), (err) => this.positionError(err));
     }
-    return 'Ошибка!';
   }
 
   positionDetected(position) {
-    this.position = position;
-    const { timestamp, coords } = this.position;
+    const { timestamp, coords } = position;
     const { latitude, longitude, accuracy } = coords;
     console.log(timestamp, latitude, longitude, accuracy);
+    this.layout.renderMessage(this.text, this.createDate(), `${latitude} ${longitude}`);
   }
 
   positionError(error) {
-    this.error = error;
     console.log(`
       Определить геопозицию не удалось.
-      Ошибка: ${this.error.message}
-      Код ошибки^ ${this.error.code}
+      Ошибка: ${error.message}
+      Код ошибки: ${error.code}
     `);
   }
 }
