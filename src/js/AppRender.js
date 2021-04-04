@@ -32,19 +32,45 @@ export default class AppRender {
   renderError() {
     this.errorEl = document.createElement('div');
     this.errorEl.className = 'error';
+    this.createErrorTitle();
+    this.createErrorText();
+    this.createParagraph();
+    this.createErrorTextarea();
+    this.createErrorButtons();
+    this.body.append(this.errorEl);
+    this.initErrorListeners();
+  }
+
+  createErrorTitle() {
     this.errorTitleEl = document.createElement('div');
     this.errorTitleEl.className = 'error__title';
     this.errorTitleEl.textContent = 'Что-то пошло не так';
+    this.errorEl.append(this.errorTitleEl);
+  }
+
+  createErrorText() {
     this.errorTextEl = document.createElement('div');
     this.errorTextEl.className = 'error__text';
     this.errorTextEl.textContent = `
       К сожалению, нам не удалось определить ваше местоположение, пожалуйста, дайте разрешение на использование геолокации, либо
       введите данные вручную.
     `;
+    this.errorEl.append(this.errorTextEl);
+  }
+
+  createParagraph() {
     this.pEl = document.createElement('p');
     this.pEl.textContent = 'Широта и долгота через запятую';
+    this.errorEl.append(this.pEl);
+  }
+
+  createErrorTextarea() {
     this.errorTextareaEl = document.createElement('textarea');
     this.errorTextareaEl.className = 'error__textarea';
+    this.errorEl.append(this.errorTextareaEl);
+  }
+
+  createErrorButtons() {
     this.buttonsEl = document.createElement('div');
     this.buttonsEl.className = 'buttons';
     this.cancelButtonEl = document.createElement('button');
@@ -56,7 +82,18 @@ export default class AppRender {
     this.okButtonEl.id = 'ok';
     this.okButtonEl.textContent = 'ОК';
     this.buttonsEl.append(this.cancelButtonEl, this.okButtonEl);
-    this.errorEl.append(this.errorTitleEl, this.errorTextEl, this.pEl, this.errorTextareaEl, this.buttonsEl);
-    this.body.append(this.errorEl);
+    this.errorEl.append(this.buttonsEl);
+  }
+
+  initErrorListeners() {
+    this.errorEl.addEventListener('click', (e) => {
+      console.log(e.target.id);
+      if (e.target.id === 'cancel') {
+        while (this.body.firstChild) {
+          this.body.firstChild.remove();
+        }
+        this.init();
+      }
+    });
   }
 }
