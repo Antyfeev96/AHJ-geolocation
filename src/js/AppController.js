@@ -1,8 +1,9 @@
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 export default class AppController {
-  constructor(layout) {
+  constructor(layout, handler) {
     this.layout = layout;
+    this.handler = handler;
   }
 
   init() {

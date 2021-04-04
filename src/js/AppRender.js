@@ -93,6 +93,13 @@ export default class AppRender {
           this.body.firstChild.remove();
         }
         this.init();
+      } else if (e.target.id === 'ok') {
+        const data = this.errorEl.querySelector('textarea').value;
+        while (this.body.firstChild) {
+          this.body.firstChild.remove();
+        }
+        this.init();
+        this.renderMessage(data, 1, 1);
       }
     });
   }
