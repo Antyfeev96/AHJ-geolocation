@@ -58,6 +58,10 @@ export default class AppController {
   }
 
   positionError(error) {
+    while (this.body.firstChild) {
+      this.body.firstChild.remove();
+    }
+    this.layout.renderError();
     console.log(`
       Определить геопозицию не удалось.
       Ошибка: ${error.message}
