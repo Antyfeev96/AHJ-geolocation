@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 export default class AppController {
@@ -13,13 +14,16 @@ export default class AppController {
   }
 
   addListeners() {
-    this.body.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && this.text !== '') {
-        this.text = this.body.querySelector('textarea').value;
-        this.getCoords();
-        this.body.querySelector('textarea').value = '';
-      }
-    });
+    this.body.removeEventListener('keydown', (e) => this.listenerCallback(e));
+    this.body.addEventListener('keydown', (e) => this.listenerCallback(e));
+  }
+
+  listenerCallback(e) {
+    this.text = this.body.querySelector('textarea').value;
+    if (e.key === 'Enter' && this.text !== '') {
+      this.getCoords(this.text);
+      this.body.querySelector('textarea').value = '';
+    }
   }
 
   createDate() {
@@ -36,11 +40,11 @@ export default class AppController {
     return `${this.yearFormatter.format(this.date)} ${this.dailyFormatter.format(this.date)}`;
   }
 
-  getCoords() {
+  getCoords(text) {
     if (navigator.geolocation) {
       return navigator
         .geolocation
-        .getCurrentPosition((pos) => this.positionDetected(pos), (err) => this.positionError(err));
+        .getCurrentPosition((pos) => this.positionDetected(pos), (err) => this.positionError(err, text));
     }
   }
 
@@ -58,15 +62,39 @@ export default class AppController {
     this.layout.renderMessage(this.text, this.createDate(), this.coords);
   }
 
-  positionError(error) {
+  positionError(error, text) {
+    console.log(text);
     while (this.body.firstChild) {
       this.body.firstChild.remove();
     }
     this.layout.renderError();
+    this.errorEl = document.querySelector('.error');
+    this.initErrorListeners(text);
     console.log(`
       Определить геопозицию не удалось.
       Ошибка: ${error.message}
       Код ошибки: ${error.code}
     `);
+  }
+
+  initErrorListeners(text) {
+    this.errorEl.addEventListener('click', (e) => {
+      if (e.target.id === 'cancel') {
+        while (this.body.firstChild) {
+          this.body.firstChild.remove();
+        }
+        this.init();
+      } else if (e.target.id === 'ok') {
+        const data = this.errorEl.querySelector('textarea').value;
+        const coords = this.handler.split(data);
+        while (this.body.firstChild) {
+          this.body.firstChild.remove();
+        }
+        this.init();
+        this.coords = `[${coords[0]}, ${coords[1]}]`;
+        console.log(text);
+        this.layout.renderMessage(text, this.createDate(), this.coords);
+      }
+    });
   }
 }

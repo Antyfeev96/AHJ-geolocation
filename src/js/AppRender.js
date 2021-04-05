@@ -2,6 +2,7 @@
 export default class AppRender {
   constructor() {
     this.body = document.body;
+    this.messages = [];
   }
 
   init() {
@@ -9,6 +10,9 @@ export default class AppRender {
     this.messagesEl.className = 'messages';
     this.textareaEl = document.createElement('textarea');
     this.textareaEl.className = 'textarea';
+    if (this.messages.length !== 0) {
+      this.messages.forEach((item) => this.messagesEl.append(item));
+    }
     this.body.append(this.messagesEl);
     this.body.append(this.textareaEl);
   }
@@ -27,6 +31,7 @@ export default class AppRender {
     this.coordsEl.textContent = coords;
     this.messageEl.append(this.textEl, this.timestampEl, this.coordsEl);
     this.messagesEl.append(this.messageEl);
+    this.messages.push(this.messageEl);
   }
 
   renderError() {
@@ -38,7 +43,6 @@ export default class AppRender {
     this.createErrorTextarea();
     this.createErrorButtons();
     this.body.append(this.errorEl);
-    this.initErrorListeners();
   }
 
   createErrorTitle() {
@@ -83,24 +87,5 @@ export default class AppRender {
     this.okButtonEl.textContent = 'ОК';
     this.buttonsEl.append(this.cancelButtonEl, this.okButtonEl);
     this.errorEl.append(this.buttonsEl);
-  }
-
-  initErrorListeners() {
-    this.errorEl.addEventListener('click', (e) => {
-      console.log(e.target.id);
-      if (e.target.id === 'cancel') {
-        while (this.body.firstChild) {
-          this.body.firstChild.remove();
-        }
-        this.init();
-      } else if (e.target.id === 'ok') {
-        const data = this.errorEl.querySelector('textarea').value;
-        while (this.body.firstChild) {
-          this.body.firstChild.remove();
-        }
-        this.init();
-        this.renderMessage(data, 1, 1);
-      }
-    });
   }
 }
