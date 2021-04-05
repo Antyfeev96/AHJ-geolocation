@@ -91,8 +91,7 @@ export default class AppController {
           this.body.firstChild.remove();
         }
         this.init();
-        this.coords = `[${coords[0]}, ${coords[1]}]`;
-        console.log(text);
+        this.coords = `[${coords.latitude}, ${coords.longitude}]`;
         this.layout.renderMessage(text, this.createDate(), this.coords);
       }
     });
